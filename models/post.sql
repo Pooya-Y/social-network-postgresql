@@ -4,7 +4,7 @@ CREATE TABLE post (
     text VARCHAR(280) NOT NULL,
     number_of_likes int DEFAULT 0,
 );
-CREATE TABLE like (
+CREATE TABLE likes (
     user_id BIGINT NOT NULL, 
     post_id BIGINT NOT NULL, 
     FOREIGN KEY (user_id) REFERENCES users (id),                                                                                                                                                     FOREIGN KEY (user_id) REFERENCES users (id),                                                                      FOREIGN KEY (following_id) REFERENCES users (id)                                                                                                                                                      following_id BIGINT NOT NULL,                                                                                FOREIGN KEY (user_id) REFERENCES users (id),                                                                      FOREIGN KEY (following_id) REFERENCES users (id)                                                                  

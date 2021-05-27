@@ -1,4 +1,4 @@
-CREATE TABLE user (
+CREATE TABLE users (
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     username VARCHAR(50) NOT NULL,
@@ -8,7 +8,8 @@ CREATE TABLE user (
     location VARCHAR(500),
     website VARCHAR(255),
     created_date TIMESTAMP DEFAULT Now(),
-    date_of_birth DATE
+    date_of_birth DATE,
+    email VARCHAR(150) NOT NULL, UNIQUE(email)
 
 );
 CREATE TABLE following (
