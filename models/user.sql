@@ -9,7 +9,8 @@ CREATE TABLE users (
     website VARCHAR(255),
     created_date TIMESTAMP DEFAULT Now(),
     date_of_birth DATE,
-    email VARCHAR(150) NOT NULL, UNIQUE(email)
+    email VARCHAR(150) NOT NULL, UNIQUE(email),
+    is_admin boolean
 
 );
 CREATE TABLE following (

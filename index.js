@@ -21,11 +21,8 @@ const pool = new Pool({
   password: 'pooya67206720',
   port: 5432,
 })
-// pool.query('SELECT NOW()', (err, res) => {
-//     console.log(err, res.rows[0])
-//     pool.end()
-//   })
-// app.use('/uploads', express.static(__dirname + '/uploads'));
+
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 const port = process.env.PORT || 3000;
 
