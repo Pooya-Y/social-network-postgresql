@@ -34,7 +34,7 @@ const upload = multer({
 router.get('',async(req, res)=>{
     try {
         const {rows} = await db.query(
-        'SELECT username,email, avatar, bio FROM users',
+        'SELECT * FROM users',
         );
         res.send(rows);
     } catch(err){
@@ -93,7 +93,53 @@ router.delete('/:username', async (req, res)=>{
         res.send(err.stack)
     }
 });
+router.post("/follow/", async (req, res) =>{
+    (async () => {
+        const client = await db.client();
+        try {
+            await client.query('BEGIN')
+            await db.query(
+                'INSERT INTO following (user_id, following_id) VALUES($1,$2)',
+                [req.body.user_id, req.body.following_id ]
+            );
+            await db.query(
+                'INSERT INTO follower(user_id, follower_id) VALUES($1,$2)',
+                [req.body.following_id ,req.body.user_id]
+            );
+            await client.query('COMMIT')
+            res.send();
+        } catch (e) {
+            await client.query('ROLLBACK')
+            res.send(e.stack);
+        } finally {
+            client.release()
+        }
+      })().catch(e => console.error(e.stack))
+});
 
+router.post("/unfollow/", async (req, res) =>{
+    (async () => {
+        const client = await db.client();
+        try {
+            await client.query('BEGIN')
+            await db.query(
+                'DELETE FROM following WHERE following_id = $1',
+                [req.body.unfollowing_id ]
+            );
+            await db.query(
+                'DELETE FROM follower WHERE user_id = $1',
+                [req.body.unfollowing_id]
+            );
+            await client.query('COMMIT')
+            res.send();
+        } catch (e) {
+            await client.query('ROLLBACK')
+            res.send(e.stack);
+        } finally {
+            client.release();
+        }
+      })().catch(e => console.error(e.stack));
+});
 
 
 module.exports = router;
