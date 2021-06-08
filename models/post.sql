@@ -3,6 +3,7 @@ CREATE TABLE post (
     author_id BIGINT NOT NULL,
     text VARCHAR(280) NOT NULL,
     number_of_likes int DEFAULT 0,
+    created_date TIMESTAMP DEFAULT Now()
 );
 CREATE TABLE likes (
     user_id BIGINT NOT NULL, 
