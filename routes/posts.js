@@ -32,13 +32,27 @@ const upload = multer({
 router.get("/user/:username",auth, async (req, res) => {
 
 });
-router.get("/timeline",auth, async (req, res) => {
+
+router.get("/post/:post_id", async (req, res) => {
+        const post = await db.query(
+            'SELECT * FROM post WHERE id = $1',
+            [req.params.post_id]
+        );
+        const image = await db.query(
+            'SELECT * FROM images WHERE images.post_id = $1',
+            [req.params.post_id]
+        );
+        res.send({post: post.rows[0], images: image.rows});
 });
 
-router.post('/', async (req,res)=>{
+router.get("/timeline", async (req, res) => {
+    // const {rows} = await db.query('');
+});
+
+router.post('/',async (req,res)=>{
     try {
         const {rows} = await db.query(
-        'INSERT INTO posts'
+        'INSERT INTO post'
         +'(author_id, text)'
         +'VALUES($1,$2)',[req.body.author_id, req.body.text]);
         res.send(rows[0]);
@@ -47,7 +61,7 @@ router.post('/', async (req,res)=>{
     }
 
 });
-router.post('/images/:id',upload.array("images", 4), async (req,res)=>{
+router.post('/images/',upload.array("images", 4), async (req,res)=>{
     basePath = req.protocol + "://" + req.get("host") + "/uploads/";
     let images = [];
     if(req.files){
@@ -60,7 +74,7 @@ router.post('/images/:id',upload.array("images", 4), async (req,res)=>{
             const {rows} = await db.query(
             'INSERT INTO images'
             +'(image, post_id)'
-            +'VALUES($1,$2)',[req.body.image,req.params.id]);
+            +'VALUES($1,$2)',[images[i],req.body.post_id]);
             res.send(rows[0]);
         } catch(err){
             res.send(err.stack)
@@ -79,7 +93,7 @@ router.post("/like/:id", async (req, res) =>{
     }
 });
 
-router.post("/unlike/:id", async (req, res) =>{
+router.delete("/unlike/:id", async (req, res) =>{
     try {
         const {rows} = await db.query(
         'DELETE FROM likes WHERE user_id = $1 AND post_id = $2',[req.body.user,req.params.id]);
@@ -89,3 +103,5 @@ router.post("/unlike/:id", async (req, res) =>{
     }
 });
 
+
+module.exports = router;

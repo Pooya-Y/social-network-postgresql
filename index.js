@@ -1,6 +1,7 @@
 const express = require("express");
-const { Pool, Client } = require('pg')
+const { Pool, Client } = require('pg');
 const users = require("./routes/users");
+const posts = require("./routes/posts");
 
 const app = express();
 
@@ -13,14 +14,7 @@ app.use(express.json());
 
 
 app.use("/api/users", users);
-
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'sn',
-  password: 'pooya67206720',
-  port: 5432,
-})
+app.use("/api/posts", posts);
 
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
