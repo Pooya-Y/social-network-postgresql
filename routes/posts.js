@@ -43,10 +43,19 @@ router.get("/post/:post_id", async (req, res) => {
             [req.params.post_id]
         );
         res.send({post: post.rows[0], images: image.rows});
+        // const post = await db.query(
+        //     'select * from post left join images on post.id = images.post_id where post.id =$1',
+        //     [req.params.post_id]
+        // );
+        // res.send(post.rows);
 });
 
-router.get("/timeline", async (req, res) => {
-    // const {rows} = await db.query('');
+router.get("/timeline/:id", async (req, res) => {
+    const {rows} = await db.query(
+        'SELECT * FROM post WHERE author_id IN (SELECT following_id FROM following WHERE user_id = $1)',
+        [req.params.id]
+    );
+    res.send(rows);
 });
 
 router.post('/',async (req,res)=>{
