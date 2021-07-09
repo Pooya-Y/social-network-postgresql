@@ -5,29 +5,8 @@ const router = express.Router();
 const {auth, isAdmin} = require("../middlewares/jwt");
 const multer = require("multer");
 const { query } = require('../db');
+const {upload} = require("../middlewares/multer");
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'uploads')
-    },
-    filename: function (req, file, cb) {
-      const fileName = file.originalname.split(" ").join("-");
-      cb(null, Date.now().toString()+"-"+fileName)
-    },
-});
-
-
-   
-const upload = multer({ 
-    storage: storage ,
-    limits:{fileSize: 1024*1024*10},
-    fileFilter: function (req, file, cb) {
-        if(file.mimetype !== 'image/png' && file.mimetype !== 'image/jpg' && file.mimetype !== 'image/jpeg') {
-            cb(new Error("Wrong file type"), false);
-        }
-        cb(null, true);
-    },
-})
 
 router.get("/post/:post_id", async (req, res) => {
     try{
@@ -43,11 +22,6 @@ router.get("/post/:post_id", async (req, res) => {
     }catch(err){
         res.send(err.stack)
     }
-        // const images = await db.query(
-        //     'select image from post inner join images on post.id = images.post_id where post.id =$1',
-        //     [req.params.post_id]
-        // );
-        // res.send({post:post.rows, images: images.rows});
 });
 
 router.get("/timeline/:id", async (req, res) => {
