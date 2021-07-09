@@ -29,11 +29,8 @@ const upload = multer({
     },
 })
 
-router.get("/user/:username",auth, async (req, res) => {
-
-});
-
 router.get("/post/:post_id", async (req, res) => {
+    try{
         const post = await db.query(
             'SELECT * FROM post WHERE id = $1',
             [req.params.post_id]
@@ -43,19 +40,26 @@ router.get("/post/:post_id", async (req, res) => {
             [req.params.post_id]
         );
         res.send({post: post.rows[0], images: image.rows});
-        // const post = await db.query(
-        //     'select * from post left join images on post.id = images.post_id where post.id =$1',
+    }catch(err){
+        res.send(err.stack)
+    }
+        // const images = await db.query(
+        //     'select image from post inner join images on post.id = images.post_id where post.id =$1',
         //     [req.params.post_id]
         // );
-        // res.send(post.rows);
+        // res.send({post:post.rows, images: images.rows});
 });
 
 router.get("/timeline/:id", async (req, res) => {
-    const {rows} = await db.query(
-        'SELECT * FROM post WHERE author_id IN (SELECT following_id FROM following WHERE user_id = $1)',
-        [req.params.id]
-    );
-    res.send(rows);
+    try{
+        const {rows} = await db.query(
+            'SELECT * FROM post WHERE author_id IN (SELECT following_id FROM following WHERE user_id = $1)',
+            [req.params.id]
+        );
+        res.send(rows);
+    }catch(err){
+        res.send(err.stack)
+    }
 });
 
 router.post('/',async (req,res)=>{
